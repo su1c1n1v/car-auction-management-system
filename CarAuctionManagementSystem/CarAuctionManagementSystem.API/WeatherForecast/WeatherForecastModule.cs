@@ -7,9 +7,9 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
 
-public class WeatherForecastModule : ICarterModule
+public class WeatherForecastModule(ILogger<WeatherForecastModule> logger) : CarterModule
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public override void AddRoutes(IEndpointRouteBuilder app)
     {
         var summaries = new[]
         {
@@ -18,6 +18,8 @@ public class WeatherForecastModule : ICarterModule
 
         app.MapGet("/weatherforecast", () =>
             {
+                logger.LogInformation("Getting weather forecast");
+                
                 var forecast = Enumerable.Range(1, 5).Select(index =>
                         new WeatherForecast
                         (
@@ -26,6 +28,8 @@ public class WeatherForecastModule : ICarterModule
                             summaries[Random.Shared.Next(summaries.Length)]
                         ))
                     .ToArray();
+                logger.LogInformation("Returning weather forecast");
+
                 return forecast;
             })
             .WithName("GetWeatherForecast")

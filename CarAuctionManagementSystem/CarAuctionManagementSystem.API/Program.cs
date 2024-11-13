@@ -1,3 +1,4 @@
+using CarAuctionManagementSystem.API.Auctions;
 using CarAuctionManagementSystem.API.ExceptionHandler;
 using CarAuctionManagementSystem.API.Logging;
 using CarAuctionManagementSystem.API.Vehicles;
@@ -11,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCarter();
 builder.Services.AddVehicleServices();
+builder.Services.AddAuctionServices();
 
 var app = builder.Build();
 

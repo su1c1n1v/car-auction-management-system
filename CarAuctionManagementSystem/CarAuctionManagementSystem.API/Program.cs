@@ -3,10 +3,11 @@ using Carter;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddLoggingServices();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCarter();
-builder.Services.AddLoggingServices(builder.Logging);
 
 var app = builder.Build();
 

@@ -1,3 +1,4 @@
+using CarAuctionManagementSystem.API.ExceptionHandler;
 using CarAuctionManagementSystem.API.Logging;
 using CarAuctionManagementSystem.API.Vehicles;
 using Carter;
@@ -18,6 +19,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.AddExceptionHandleMiddleware();
 
 app.MapCarter();
 app.Run();

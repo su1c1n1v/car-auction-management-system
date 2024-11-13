@@ -4,18 +4,16 @@ namespace CarAuctionManagementSystem.API.Logging;
 
 public static class ConfigureServices
 {
-    public static IServiceCollection AddLoggingServices(this IServiceCollection services, ILoggingBuilder loggingBuilder)
+    public static WebApplicationBuilder AddLoggingServices(this WebApplicationBuilder builder)
     {
-        loggingBuilder.ClearProviders();
+        ArgumentNullException.ThrowIfNull(builder);
 
-        // Configure Serilog using settings from appsettings.json
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console()
-            .CreateLogger();
+        builder.Logging.ClearProviders();
 
-        // Register Serilog in the service collection
-        services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+        builder.Host.UseSerilog((context, services, configuration) => configuration
+            .ReadFrom.Configuration(context.Configuration)
+            .ReadFrom.Services(services));
 
-        return services;
+        return builder;
     }
 }

@@ -1,16 +1,34 @@
-﻿namespace CarAuctionManagementSystem.API.Vehicles.Models;
+﻿using System.Text.Json.Serialization;
 
-public abstract class Vehicle
+namespace CarAuctionManagementSystem.API.Vehicles.Models;
+
+[JsonDerivedType(typeof(Hatchback))]
+[JsonDerivedType(typeof(Sedan))]
+[JsonDerivedType(typeof(SUV))]
+[JsonDerivedType(typeof(Truck))]
+public abstract class Vehicle : AuditEntity
 {
-    public Guid Id { get; init; }
-    public string Manufacturer { get; set; }
-    public string Model { get; set; }
-    public VehicleType Type { get; init; }
-    public short Year { get; set; }
+    public Guid Id { get; init; } = Guid.NewGuid();
+    public string Manufacturer { get; set; } = string.Empty;
+    public string Model { get; set; } = string.Empty;
+    public virtual VehicleType Type { get; init; } = new();
+    public int Year { get; set; }
     public double StartingBid { get; set; }
 }
 
-public enum VehicleType
+public abstract class AuditEntity
+{
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+}
+
+public class VehicleType
+{
+    public VehicleEnumType Id { get; set; }
+
+    public string Name => Id.ToString();
+}
+
+public enum VehicleEnumType
 {
     Hatchback,
     Sedan,
@@ -20,40 +38,40 @@ public enum VehicleType
 
 public sealed class Truck : Vehicle
 {
-    public Truck()
+    public override VehicleType Type => new()
     {
-        Type = VehicleType.Truck;
-    }
+        Id = VehicleEnumType.Truck
+    };
 
     public double LoadCapacity { get; set; }
 }
 
 public sealed class SUV : Vehicle
 {
-    public SUV()
+    public override VehicleType Type => new()
     {
-        Type = VehicleType.SUV;
-    }
+        Id = VehicleEnumType.SUV
+    };
 
-    public sbyte NumberSeats { get; set; }
+    public int NumberSeats { get; set; }
 }
 
 public sealed class Sedan : Vehicle
 {
-    public Sedan()
+    public override VehicleType Type => new()
     {
-        Type = VehicleType.Sedan;
-    }
+        Id = VehicleEnumType.Sedan
+    };
 
-    public sbyte NumberDoors { get; set; }
+    public int NumberDoors { get; set; }
 }
 
 public sealed class Hatchback : Vehicle
 {
-    public Hatchback()
+    public override VehicleType Type => new()
     {
-        Type = VehicleType.Hatchback;
-    }
+        Id = VehicleEnumType.Hatchback
+    };
 
-    public sbyte NumberDoors { get; set; }
+    public int NumberDoors { get; set; }
 }

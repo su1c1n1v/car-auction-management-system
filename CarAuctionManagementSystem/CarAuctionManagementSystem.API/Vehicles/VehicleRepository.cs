@@ -13,7 +13,35 @@ public class VehicleRepository : IVehicleRepository
             Year = 2019,
             Model = "Corolla",
             Manufacturer = "Toyota",
+            Type = new()
+            {
+                Id = VehicleEnumType.Hatchback
+            },
             StartingBid = Random.Shared.Next(3000, 10000)
+        },
+        new Hatchback
+        {
+            NumberDoors = (sbyte)Random.Shared.Next(2, 4),
+            Year = 2024,
+            Model = "Corolla",
+            Manufacturer = "Toyota",
+            Type = new()
+            {
+                Id = VehicleEnumType.Hatchback
+            },
+            StartingBid = Random.Shared.Next(7000, 12000)
+        },
+        new Hatchback
+        {
+            NumberDoors = (sbyte)Random.Shared.Next(2, 4),
+            Year = 2010,
+            Model = "Corolla",
+            Manufacturer = "Toyota",
+            Type = new()
+            {
+                Id = VehicleEnumType.Hatchback
+            },
+            StartingBid = Random.Shared.Next(3000, 6000)
         },
         new Sedan
         {
@@ -21,26 +49,49 @@ public class VehicleRepository : IVehicleRepository
             Year = 2018,
             Model = "Civic",
             Manufacturer = "Honda",
+            Type = new()
+            {
+                Id = VehicleEnumType.Sedan
+            },
+            StartingBid = Random.Shared.Next(3000, 10000)
+        },
+        new Sedan
+        {
+            NumberDoors = (sbyte)Random.Shared.Next(2, 4),
+            Year = 2018,
+            Model = "Camry",
+            Manufacturer = "Toyota",
+            Type = new()
+            {
+                Id = VehicleEnumType.Sedan
+            },
             StartingBid = Random.Shared.Next(3000, 10000)
         },
         new SUV
         {
-            NumberSeats = (sbyte)Random.Shared.Next(5, 9),
+            NumberSeats = (sbyte)Random.Shared.Next(5, 40),
             Year = 2017,
             Model = "Explorer",
             Manufacturer = "Ford",
+            Type = new()
+            {
+                Id = VehicleEnumType.SUV
+            },
             StartingBid = Random.Shared.Next(3000, 10000)
         },
         new Truck
         {
             Year = 2016,
             Model = "Silverado",
-            LoadCapacity = Random.Shared.Next(100, 1300),
+            Type = new()
+            {
+                Id = VehicleEnumType.Truck
+            },
+            LoadCapacity = Random.Shared.Next(100, 74000),
             Manufacturer = "Chevrolet",
-            StartingBid = Random.Shared.Next(3000, 10000)
+            StartingBid = Random.Shared.Next(3000, 10000),
         }
     ];
-
 
     public Task<IEnumerable<Vehicle>> GetAllAsync()
     {
@@ -52,26 +103,6 @@ public class VehicleRepository : IVehicleRepository
         return Task.FromResult(_vehicles.FirstOrDefault(v => v.Id.ToString() == id));
     }
     
-    public Task<IEnumerable<Vehicle>> GetByManufacturerAsync(string manufacturer)
-    {
-        return Task.FromResult(_vehicles.Where(v => v.Manufacturer == manufacturer).AsEnumerable());
-    }
-    
-    public Task<IEnumerable<Vehicle>> GetByYearAsync(int year)
-    {
-        return Task.FromResult(_vehicles.Where(v => v.Year == year).AsEnumerable());
-    }
-    
-    public Task<IEnumerable<Vehicle>> GetByModelAsync(string model)
-    {
-        return Task.FromResult(_vehicles.Where(v => v.Model == model).AsEnumerable());
-    }
-    
-    public Task<IEnumerable<Vehicle>> GetByTypeAsync(string type)
-    {
-        return Task.FromResult(_vehicles.Where(v => v.GetType().Name == type).AsEnumerable());
-    }
-
     public Task<Vehicle> AddAsync(Vehicle vehicle)
     {
         return Task.Run(() =>
@@ -79,18 +110,5 @@ public class VehicleRepository : IVehicleRepository
             _vehicles.Add(vehicle);
             return vehicle;
         });
-    }
-
-    public Task<Vehicle> UpdateAsync(Vehicle vehicle)
-    {
-        var existingVehicle = _vehicles.FirstOrDefault(v => v.Id == vehicle.Id);
-        if (existingVehicle == null)
-        {
-            return Task.FromResult<Vehicle>(null);
-        }
-
-        _vehicles.Remove(existingVehicle);
-        _vehicles.Add(vehicle);
-        return Task.FromResult(vehicle);
     }
 }

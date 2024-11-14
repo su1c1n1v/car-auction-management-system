@@ -24,11 +24,13 @@ public class AuctionService(
 
         var existingAuction = await GetAllAsync();
 
-        if (existingAuction.Any(a =>
-                a.Vehicle.Id == vehicle.Id &&
-                a.Status.Id == AuctionStatusEnum.Active ||
-                a.Status.Id == AuctionStatusEnum.Pending ||
-                a.Status.Id == AuctionStatusEnum.Sold))
+        bool isAuctionForThisVehicle = existingAuction.Any(a =>
+            a.Vehicle.Id == vehicle.Id &&
+            (a.Status.Id == AuctionStatusEnum.Active ||
+             a.Status.Id == AuctionStatusEnum.Pending ||
+             a.Status.Id == AuctionStatusEnum.Sold));
+        
+        if (isAuctionForThisVehicle)
         {
             logger.LogWarning("Service: Auction already exists an active auction for this vehicle");
             throw new BadHttpRequestException("Auction already exists an active auction for this vehicle");
@@ -128,10 +130,10 @@ public class AuctionService(
             throw new BadHttpRequestException("Auction is not active");
         }
 
-        if (
-            auction.Bids.Any() && bid.Amount <= auction.Bids.Max(b => b.Amount)
-            || bid.Amount < auction.Vehicle.StartingBid
-        )
+        bool isAmountLowerThanStartingBid = bid.Amount < auction.Vehicle.StartingBid;
+        bool isAmountLowerThanCurrentHighestBid = auction.Bids.Any() && bid.Amount <= auction.Bids.Max(b => b.Amount);
+
+        if (isAmountLowerThanCurrentHighestBid || isAmountLowerThanStartingBid)
         {
             logger.LogWarning("Service: Bid amount is lower than the current highest bid");
             throw new BadHttpRequestException("Bid amount is lower than the current highest bid");

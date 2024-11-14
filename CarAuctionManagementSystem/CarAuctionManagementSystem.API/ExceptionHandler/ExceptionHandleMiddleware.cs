@@ -19,6 +19,10 @@ public class ExceptionHandleMiddleware(RequestDelegate next)
         {
             await HandleValidationException(ex, httpContext);
         }
+        catch (NullReferenceException ex)
+        {
+            await HandleNullReferenceException(ex, httpContext);
+        }
         catch (Exception ex)
         {
             await HandleException(ex, httpContext);
@@ -33,6 +37,18 @@ public class ExceptionHandleMiddleware(RequestDelegate next)
         {
             Message = ex.Message,
             StatusCode = StatusCodes.Status400BadRequest,
+            Success = false
+        });
+    }
+
+    private async Task HandleNullReferenceException(NullReferenceException ex, HttpContext httpContext)
+    {
+        httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+
+        await httpContext.Response.WriteAsJsonAsync(new ResponseModel
+        {
+            Message = ex.Message,
+            StatusCode = StatusCodes.Status404NotFound,
             Success = false
         });
     }

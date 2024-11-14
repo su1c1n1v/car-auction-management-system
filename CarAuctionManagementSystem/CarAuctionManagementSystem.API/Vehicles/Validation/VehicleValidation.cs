@@ -20,8 +20,7 @@ public class VehicleValidation : AbstractValidator<CreateVehicleDto>
 
         RuleFor(vehicle => vehicle.Type)
             .NotNull()
-            .IsInEnum()
-            .When(vehicle => vehicle.Type != VehicleEnumType.Truck);
+            .IsInEnum();
 
         RuleFor(vehicle => vehicle.Year)
             .NotNull()

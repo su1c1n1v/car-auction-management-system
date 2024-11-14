@@ -3,13 +3,15 @@ using FluentValidation;
 
 namespace CarAuctionManagementSystem.API.ExceptionHandler;
 
-public class ExceptionHandleMiddleware(RequestDelegate next)
+public class ExceptionHandleMiddleware(RequestDelegate next, ILogger<ExceptionHandleMiddleware> logger)
 {
     public async Task Invoke(HttpContext httpContext)
     {
         try
         {
+            logger.LogDebug("Handling request.");
             await next(httpContext);
+            logger.LogDebug("Request handled.");
         }
         catch (BadHttpRequestException ex)
         {
@@ -25,6 +27,7 @@ public class ExceptionHandleMiddleware(RequestDelegate next)
         }
         catch (Exception ex)
         {
+            logger.LogCritical(ex, ex.Message);
             await HandleException(ex, httpContext);
         }
     }

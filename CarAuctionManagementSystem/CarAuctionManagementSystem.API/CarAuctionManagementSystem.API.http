@@ -1,6 +1,0 @@
-@CarAuctionManagementSystem.API_HostAddress = http://localhost:5174
-
-GET {{CarAuctionManagementSystem.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
